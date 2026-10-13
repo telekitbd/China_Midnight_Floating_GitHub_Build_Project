@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
         root.addView(title);
 
         TextView desc = new TextView(this);
-        desc.setText("Bangladesh + China time · auto alarm at China 00:00");
+        desc.setText("Bangladesh + China time · alarm auto-set when floating starts");
         desc.setTextColor(Color.LTGRAY); desc.setTextSize(14);
         desc.setGravity(Gravity.CENTER); desc.setPadding(0,12,0,24);
         root.addView(desc);
@@ -45,12 +45,6 @@ public class MainActivity extends Activity {
         floatBtn.setText("START TINY FLOATING CLOCK");
         root.addView(floatBtn, new LinearLayout.LayoutParams(-1,-2));
         floatBtn.setOnClickListener(v -> startFloating());
-
-        Button alarmBtn = new Button(this);
-        alarmBtn.setText("SET CHINA MIDNIGHT VIBRATION");
-        LinearLayout.LayoutParams ap = new LinearLayout.LayoutParams(-1,-2);
-        ap.topMargin = 12; root.addView(alarmBtn, ap);
-        alarmBtn.setOnClickListener(v -> scheduleMidnight());
 
         status = new TextView(this);
         status.setTextColor(Color.LTGRAY); status.setTextSize(13);
@@ -71,8 +65,7 @@ public class MainActivity extends Activity {
             return;
         }
         startService(new Intent(this, FloatingClockService.class));
-        status.setText("Tiny floating clock started. Setting China midnight vibration...");
-        scheduleMidnight();
+        status.setText("Floating clock ON · alarm active only while floating is ON.");
     }
 
     private long nextChinaMidnight() {
@@ -87,18 +80,20 @@ public class MainActivity extends Activity {
         return c.getTimeInMillis();
     }
 
-    private void scheduleMidnight() {
+    private boolean scheduleMidnight() {
         AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= 31 && !am.canScheduleExactAlarms()) {
             status.setText("Allow Alarms & reminders, then press the alarm button again.");
             startActivity(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                 Uri.parse("package:" + getPackageName())));
-            return;
+            status.setText("Allow Alarms & reminders, then tap START once more.");
+            return false;
         }
         Intent intent = new Intent(this, MidnightReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 101, intent,
             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextChinaMidnight(), pi);
         status.setText("China midnight vibration is set for 00:00.");
+        return true;
     }
 }
