@@ -32,3 +32,24 @@ GitHub দিয়ে APK build:
 3. “Build Android APK” workflow বেছে Run workflow চাপুন। main/master-এ push করলেও workflow চলবে।
 4. Build সবুজ হলে run-এর পেজের নিচে Artifacts থেকে China-Midnight-Floating-APK ZIP download করুন।
 5. Artifact ZIP extract করলে app-debug.apk পাবেন।
+
+
+আপডেট:
+- শুধু START TINY FLOATING CLOCK বোতাম থেকেই floating clock চালু এবং China midnight alarm schedule হয়।
+- প্রথমবার overlay/exact-alarm permission চাইলে অনুমতি দিয়ে অ্যাপে ফিরে START আবার চাপুন।
+- অ্যালার্ম প্রতিদিনের China midnight-এর পর পরের দিনের জন্য auto-reschedule করে।
+- অ্যাপ icon যোগ করা হয়েছে।
+- প্রথমবারের permission ছাড়া প্রতিবার আলাদা alarm button চাপার দরকার নেই।
+
+
+গুরুত্বপূর্ণ আচরণ (আপডেট):
+- অ্যাপ থেকে START TINY FLOATING CLOCK চালু করলে floating clock service শুরু হবে এবং তখনই China midnight alarm schedule হবে।
+- floating-এর × চাপলে service বন্ধ হবে; pending alarm cancel হবে।
+- অ্যাপ/সার্ভিস বন্ধ থাকলে receiver কোনো vibration দেবে না এবং পরের দিনের alarm-ও reschedule করবে না।
+- floating আবার চালু করলে পরবর্তী China midnight-এর alarm আবার schedule হবে।
+- Android Settings থেকে overlay/exact alarm permission চাইলে অনুমতি দিন।
+
+Timer UI update:
+- Third timer is now in a separate, lightly highlighted box below Bangladesh/China live times.
+- Under the timer it says: “বাংলাদেশ রাত ১০টা / চীনের রাত ১২টা বাজতে বাকি”.
+- Countdown is shown as HH:MM:SS.mmm.
